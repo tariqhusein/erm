@@ -1,0 +1,77 @@
+### Variables
+@baseUrl = http://localhost:8080/api/v1
+@contentType = application/json
+
+### Create a new user
+POST {{baseUrl}}/users
+Content-Type: {{contentType}}
+
+{
+  "email": "test@example.com",
+  "password": "password123",
+  "name": "Test User"
+}
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 201, "Response status is not 201");
+        client.assert(response.body.email === "test@example.com", "Email in response does not match");
+    });
+    client.global.set("userId", response.body.id);
+%}
+
+### Get all users
+GET {{baseUrl}}/users
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(Array.isArray(response.body), "Response is not an array");
+    });
+%}
+
+### Get user by ID
+GET {{baseUrl}}/users/1
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(response.body.id === client.global.get("userId"), "User ID does not match");
+    });
+%}
+
+### Delete user
+DELETE {{baseUrl}}/users/1
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 204, "Response status is not 204");
+    });
+%}
+
+### Add project to user
+POST {{baseUrl}}/users/1/projects
+Content-Type: {{contentType}}
+
+{
+  "id": "project-123",
+  "name": "Test Project"
+}
+
+### Get user's projects
+GET {{baseUrl}}/users/1/projects
+
+### Response handling examples:
+# @name createUser
+POST {{baseUrl}}/users
+Content-Type: {{contentType}}
+
+{
+  "email": "test2@example.com",
+  "password": "password456",
+  "name": "Another Test User"
+}
+
+### Use response from previous request
+@userId = {{createUser.response.body.id}}
+GET {{baseUrl}}/users/{{userId}} 
