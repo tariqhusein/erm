@@ -13,16 +13,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ActiveProfiles("test")
 class ErmApplicationTests {
     @Autowired
-    PasswordEncoder passwordEncoder;
-    @Autowired
     ApplicationContext applicationContext;
 
     @Test
     void contextLoads() {
 
         assertNotNull(applicationContext);
-        var t = passwordEncoder.encode("password");
-        System.out.println(t);
     }
 
 }
