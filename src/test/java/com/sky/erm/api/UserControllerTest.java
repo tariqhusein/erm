@@ -1,7 +1,7 @@
 package com.sky.erm.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sky.erm.config.TestSecurityConfig;
+import com.sky.erm.config.SecurityConfig;
 import com.sky.erm.model.*;
 import com.sky.erm.service.IdempotencyService;
 import com.sky.erm.service.UserService;
@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UserController.class)
-@Import(TestSecurityConfig.class)
+@Import(SecurityConfig.class)
 class UserControllerTest {
 
     private static final String AUTHORIZATION_HEADER = "Basic dGFyZWs6cGFzc3dvcmQ=";

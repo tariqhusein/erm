@@ -25,4 +25,7 @@ COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8090
 
+# Set Spring profile to dev
+ENV SPRING_PROFILES_ACTIVE=dev
+
 ENTRYPOINT ["java", "-jar", "app.jar"]

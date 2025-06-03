@@ -1,18 +1,18 @@
 services:
   app:
-    image: erm:latest
+    build: .
     ports:
       - "8090:8090"
       - "5005:5005"
     environment:
+      - SPRING_PROFILES_ACTIVE=dev
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/erm
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
       - SPRING_JPA_HIBERNATE_DDL_AUTO=none
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
     depends_on:
-      db:
-        condition: service_healthy
+      - db
 
   db:
     image: postgres:15-alpine
@@ -24,12 +24,6 @@ services:
       - POSTGRES_PASSWORD=postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    restart: always
 
 volumes:
   postgres_data: 

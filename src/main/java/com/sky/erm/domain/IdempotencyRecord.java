@@ -1,15 +1,13 @@
 package com.sky.erm.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.OffsetDateTime;
 
 @Entity
 @Data
+@Table(name = "idempotency_record")
 public class IdempotencyRecord {
     @Id
     private String key;
