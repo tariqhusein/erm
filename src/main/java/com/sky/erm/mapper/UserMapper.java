@@ -16,6 +16,7 @@ public interface UserMapper {
     @Mapping(target = "externalProjects", ignore = true)
     ErmUser toEntity(CreateUserRequestDto dto);
     
+    @Mapping(target = "projects", source = "externalProjects")
     UserResponseDto toDto(ErmUser entity);
     
     @Mapping(target = "id", ignore = true)

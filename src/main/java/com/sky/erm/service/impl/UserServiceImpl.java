@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public UserResponseDto getUserById(Long userId) {
-        return userRepository.findById(userId)
+        return userRepository.findByIdWithProjects(userId)
                 .map(userMapper::toDto)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
     }

@@ -129,7 +129,7 @@ class UserServiceImplTest {
 
     @Test
     void getUserById_Success() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(mockUser));
+        when(userRepository.findByIdWithProjects(anyLong())).thenReturn(Optional.of(mockUser));
         when(userMapper.toDto(any(ErmUser.class))).thenReturn(mock(UserResponseDto.class));
 
         UserResponseDto result = userService.getUserById(1L);
@@ -140,7 +140,7 @@ class UserServiceImplTest {
 
     @Test
     void getUserById_NotFound() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(userRepository.findByIdWithProjects(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(UserNotFoundException.class, () -> 
             userService.getUserById(1L)
