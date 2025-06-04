@@ -19,6 +19,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
+import java.util.function.Supplier;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -91,9 +93,18 @@ class UserControllerTest {
     @Test
     void createUser_Success() throws Exception {
         when(userService.createUser(any(CreateUserRequestDto.class))).thenReturn(mockUserResponse);
+        when(idempotencyService.processIdempotentRequest(
+                any(),
+                any(),
+                any()
+        )).thenAnswer(invocation -> {
+            Supplier<?> supplier = invocation.getArgument(2);
+            return supplier.get();
+        });
 
         mockMvc.perform(post("/api/v1/users")
                         .header("Authorization", AUTHORIZATION_HEADER)
+                        .header("Request-Id", UUID.randomUUID())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createUserRequest)))
                 .andExpect(status().isCreated())
@@ -138,18 +149,6 @@ class UserControllerTest {
     }
 
     @Test
-    void updateUser_Success() throws Exception {
-        when(userService.updateUser(eq(1L), any(UpdateUserRequestDto.class))).thenReturn(mockUserResponse);
-
-        mockMvc.perform(put("/api/v1/users/1")
-                        .header("Authorization", AUTHORIZATION_HEADER)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateUserRequest)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").exists());
-    }
-
-    @Test
     void updateUser_WithIdempotency_Success() throws Exception {
         when(idempotencyService.processIdempotentRequest(
                 eq("test-request-id"),
@@ -188,9 +187,18 @@ class UserControllerTest {
     @Test
     void addProjectToUser_Success() throws Exception {
         when(userService.addProjectToUser(eq(1L), any(CreateProjectRequestDto.class))).thenReturn(mockProjectResponse);
+        when(idempotencyService.processIdempotentRequest(
+                any(),
+                any(),
+                any()
+        )).thenAnswer(invocation -> {
+            Supplier<?> supplier = invocation.getArgument(2);
+            return supplier.get();
+        });
 
         mockMvc.perform(post("/api/v1/users/1/projects")
                         .header("Authorization", AUTHORIZATION_HEADER)
+                        .header("Request-Id", UUID.randomUUID())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createProjectRequest)))
                 .andExpect(status().isCreated())

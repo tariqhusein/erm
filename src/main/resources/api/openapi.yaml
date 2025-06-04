@@ -18,10 +18,10 @@ paths:
       parameters:
         - name: Request-Id
           in: header
-          required: false
+          required: true
           schema:
             type: string
-          description: Optional request ID to prevent duplicate requests
+          description: request ID to prevent duplicate requests
       requestBody:
         required: true
         content:
@@ -133,10 +133,10 @@ paths:
       parameters:
         - name: Request-Id
           in: header
-          required: false
+          required: true
           schema:
             type: string
-          description: Optional request ID to prevent duplicate requests
+          description: request ID to prevent duplicate requests
       requestBody:
         required: true
         content:
@@ -193,10 +193,10 @@ paths:
       parameters:
         - name: Request-Id
           in: header
-          required: false
+          required: true
           schema:
             type: string
-          description: Optional request ID to prevent duplicate requests
+          description: request ID to prevent duplicate requests
       requestBody:
         required: true
         content:

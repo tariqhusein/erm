@@ -9,6 +9,7 @@ import com.sky.erm.service.IdempotencyService;
 import com.sky.erm.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import java.net.URI;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @Slf4j
@@ -31,29 +33,21 @@ public class UserController implements UsersApi {
     private final HttpServletRequest request;
 
     @Override
-    public ResponseEntity<ProjectResponseDto> addProjectToUser(Long userId, @Valid CreateProjectRequestDto createProjectRequestDto,
-                                                             @RequestHeader(value = "Request-Id", required = false) String requestId) {
-        if (requestId != null) {
-            return idempotencyService.processIdempotentRequest(
+    public ResponseEntity<ProjectResponseDto> addProjectToUser(Long userId, String requestId, CreateProjectRequestDto createProjectRequestDto) {
+        return idempotencyService.processIdempotentRequest(
                 requestId,
                 request.getRequestURI(),
                 () -> new ResponseEntity<>(userService.addProjectToUser(userId, createProjectRequestDto), CREATED)
-            );
-        }
-        return new ResponseEntity<>(userService.addProjectToUser(userId, createProjectRequestDto), CREATED);
+        );
     }
 
     @Override
-    public ResponseEntity<UserResponseDto> createUser(@Valid CreateUserRequestDto createUserRequestDto,
-                                                    @RequestHeader(value = "Request-Id", required = false) String requestId) {
-        if (requestId != null) {
-            return idempotencyService.processIdempotentRequest(
+    public ResponseEntity<UserResponseDto> createUser(String requestId, CreateUserRequestDto createUserRequestDto) {
+        return idempotencyService.processIdempotentRequest(
                 requestId,
                 request.getRequestURI(),
                 () -> new ResponseEntity<>(userService.createUser(createUserRequestDto), CREATED)
-            );
-        }
-        return new ResponseEntity<>(userService.createUser(createUserRequestDto), CREATED);
+        );
     }
 
     @Override
@@ -82,15 +76,12 @@ public class UserController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<UserResponseDto> updateUser(Long userId, @Valid UpdateUserRequestDto updateUserRequestDto,
-                                                    @RequestHeader(value = "Request-Id", required = false) String requestId) {
-        if (requestId != null) {
-            return idempotencyService.processIdempotentRequest(
+    public ResponseEntity<UserResponseDto> updateUser(Long userId, String requestId, UpdateUserRequestDto updateUserRequestDto) {
+        return idempotencyService.processIdempotentRequest(
                 requestId,
                 request.getRequestURI(),
-                () -> ResponseEntity.ok(userService.updateUser(userId, updateUserRequestDto))
-            );
-        }
-        return ResponseEntity.ok(userService.updateUser(userId, updateUserRequestDto));
+                () -> new ResponseEntity<>(userService.updateUser(userId, updateUserRequestDto), OK)
+        );
     }
+
 }
