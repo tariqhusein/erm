@@ -33,7 +33,7 @@ public class UserController implements UsersApi {
     private final HttpServletRequest request;
 
     @Override
-    public ResponseEntity<ProjectResponseDto> addProjectToUser(Long userId, String requestId, CreateProjectRequestDto createProjectRequestDto) {
+    public ResponseEntity<ProjectResponseDto> addProjectToUser(Long userId, @RequestHeader(value = "Request-Id", required = true) String requestId, CreateProjectRequestDto createProjectRequestDto) {
         return idempotencyService.processIdempotentRequest(
                 requestId,
                 request.getRequestURI(),
@@ -42,7 +42,7 @@ public class UserController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<UserResponseDto> createUser(String requestId, CreateUserRequestDto createUserRequestDto) {
+    public ResponseEntity<UserResponseDto> createUser(@RequestHeader(value = "Request-Id", required = true) String requestId, CreateUserRequestDto createUserRequestDto) {
         return idempotencyService.processIdempotentRequest(
                 requestId,
                 request.getRequestURI(),
@@ -76,7 +76,7 @@ public class UserController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<UserResponseDto> updateUser(Long userId, String requestId, UpdateUserRequestDto updateUserRequestDto) {
+    public ResponseEntity<UserResponseDto> updateUser(Long userId, @RequestHeader(value = "Request-Id", required = true) String requestId, UpdateUserRequestDto updateUserRequestDto) {
         return idempotencyService.processIdempotentRequest(
                 requestId,
                 request.getRequestURI(),

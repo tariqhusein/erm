@@ -1,7 +1,9 @@
 package com.sky.erm.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sky.erm.domain.IdempotencyRecord;
+import com.sky.erm.exception.BusinessException;
 import com.sky.erm.repository.IdempotencyRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +55,13 @@ public class IdempotencyService {
             idempotencyRepository.save(record);
             
             return response;
-        } catch (Exception e) {
+        } catch (JsonProcessingException e) {
+            log.error("Error processing JSON", e);
+            throw new RuntimeException("Error processing JSON", e);
+        } catch (RuntimeException e) {
+            if (e instanceof BusinessException) {
+                throw e;
+            }
             log.error("Error processing idempotent request", e);
             throw new RuntimeException("Error processing idempotent request", e);
         }
